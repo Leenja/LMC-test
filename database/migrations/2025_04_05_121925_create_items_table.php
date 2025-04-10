@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('items', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('LibraryId')->constrained('libraries');
             $table->string('File');
             $table->string('Description');
-            $table->foreignId('LibraryId')->constrained('libraries');
             $table->timestamps();
         });
     }
