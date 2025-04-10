@@ -31,6 +31,23 @@ class StaffRepository
         ]);
     }
 
+    public function getEnrolledStudentsInCourse($courseId)
+    {
+        return Enrollment::where('CourseId', $courseId)
+            ->get()
+            ->map(function ($enrollment) {
+                $student = User::find($enrollment->StudentId);
+                return [
+                    'EnrollmentId' => $enrollment->id,
+                    'Student' => $student ? [
+                        'id' => $student->id,
+                        'name' => $student->name,
+                        'email' => $student->email,
+                    ] : null,
+                ];
+            });
+    }
+
     //Add course
     public function createCourse($data)
     {

@@ -29,6 +29,11 @@ class StaffService
         });
     }
 
+    public function viewEnrolledStudentsInCourse($courseId)
+    {
+        return $this->staffRepository->getEnrolledStudentsInCourse($courseId);
+    }
+
     //Add course
     public function createCourseWithSchedule($data)
     {

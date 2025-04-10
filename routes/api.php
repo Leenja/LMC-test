@@ -10,3 +10,7 @@ Route::post("enroll", [StaffController::class, "enrollStudent"]);
 Route::post("addCourse", [StaffController::class, "addCourse"]);
 
 Route::post("editCourse", [StaffController::class,"editCourse"]);
+
+Route::get("viewEnrolledStudentsInCourse/{courseId}", [StaffController::class,"viewEnrolledStudentsInCourse"]);
+
+Route::get("getAllEnrolledStudents", [StaffController::class,"getAllEnrolledStudents"]);

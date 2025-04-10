@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Enrollment;
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Services\StaffService;
 use Carbon\Carbon;
@@ -38,9 +40,28 @@ class StaffController extends Controller
         );
     }
 
-    public function viewEnrolledStudents() {
-
+    public function viewEnrolledStudentsInCourse($courseId) {
+        return response()->json(
+            $this->staffService->viewEnrolledStudentsInCourse($courseId)
+        );
     }
+
+    public function getAllEnrolledStudents()
+    {
+        return Enrollment::all()
+            ->map(function ($enrollment) {
+                $student = User::find($enrollment->StudentId);  // Fetch user details using StudentId
+                return [
+                    'EnrollmentId' => $enrollment->id,
+                    'Student' => $student ? [
+                        'id' => $student->id,
+                        'name' => $student->name,
+                        'email' => $student->email,
+                    ] : null,
+                ];
+            });
+    }
+
 
     public function addCourse(Request $request) {
 
