@@ -101,11 +101,11 @@ class StaffController extends Controller
             $this->staffService->editCourse($data)
         );
     }
-    public function reviewRoomReservations (Request $request) {
-
-    }
 
     public function viewEnrolledStudents() {
+
+    }
+    public function reviewRoomReservations (Request $request) {
 
     }
 
