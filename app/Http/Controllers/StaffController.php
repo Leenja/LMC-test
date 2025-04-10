@@ -38,6 +38,10 @@ class StaffController extends Controller
         );
     }
 
+    public function viewEnrolledStudents() {
+
+    }
+
     public function addCourse(Request $request) {
 
         $data = $request->validate([
@@ -75,6 +79,7 @@ class StaffController extends Controller
     public function editCourse(Request $request) {
         $data = $request->validate([
             'CourseId' => 'required|exists:courses,id',
+            'RoomId' => 'required|exists:rooms,id',
             'Start_Enroll' => 'required|date|after_or_equal:now()|before_or_equal:End_Enroll',
             'End_Enroll' => 'required|date|after_or_equal:now()|after_or_equal:Start_Enroll',
             'Start_Date' => 'required|date|after_or_equal:now()|after:Start_Enroll|after:End_Enroll',
@@ -101,9 +106,6 @@ class StaffController extends Controller
         );
     }
 
-    public function viewEnrolledStudents() {
-
-    }
     public function reviewRoomReservations (Request $request) {
 
     }

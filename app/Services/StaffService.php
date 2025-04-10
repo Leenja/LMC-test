@@ -34,27 +34,30 @@ class StaffService
     {
         return DB::transaction(function () use ($data) {
 
-            // Check for schedule conflict before creating the course
-            $conflict = $this->staffRepository->checkCourseScheduleConflict(
-                $data['RoomId'],
-                Carbon::parse($data['Start_Date'])->setTimeFromTimeString($data['Start_Time']),
-                Carbon::parse($data['Start_Date'])->setTimeFromTimeString($data['End_Time']),
-                json_encode($data['CourseDays'])
-            );
-
-            if ($conflict) {
-                return response()->json([
-                    'error' => 'The new course schedule conflicts with an existing course in the same room.'
-                ], 400);
-            }
-
-            $course = $this->staffRepository->createCourse($data);
-
             $endDate = $this->staffRepository->calculateCourseEndDate(
                 $data['Start_Date'],
                 $data['CourseDays'],
                 $data['Number_of_lessons']
             );
+
+            // Check for schedule conflict before creating the course
+            $conflict = $this->staffRepository->checkCourseScheduleConflict(
+                $data['RoomId'],
+                $data['Start_Date'],
+                $endDate,  // or however you calculate it from lessons
+                $data['CourseDays'],
+                $data['Start_Time'],
+                $data['End_Time']
+            );
+
+
+            if ($conflict) {
+                return response()->json([
+                    'Message' => 'The new course schedule conflicts with an existing course in the same room.'
+                ], 400);
+            }
+
+            $course = $this->staffRepository->createCourse($data);
 
             $schedule = $this->staffRepository->createSchedule($course->id, [
                 'RoomId' => $data['RoomId'],
@@ -109,27 +112,31 @@ class StaffService
     {
         return DB::transaction(function () use ($data) {
 
-            $conflict = $this->staffRepository->checkCourseScheduleConflict(
-                $data['RoomId'],
-                Carbon::parse($data['Start_Date'])->setTimeFromTimeString($data['Start_Time']),
-                Carbon::parse($data['Start_Date'])->setTimeFromTimeString($data['End_Time']),
-                json_encode($data['CourseDays'])
-            );
-
-            if ($conflict) {
-                return response()->json([
-                    'error' => 'The updated course schedule conflicts with an existing course in the same room.'
-                ], 400);
-            }
-
             $endDate = $this->staffRepository->calculateCourseEndDate(
                 $data['Start_Date'],
                 $data['CourseDays'],
                 $data['Number_of_lessons']
             );
 
+            $conflict = $this->staffRepository->checkCourseScheduleConflict(
+                $data['RoomId'],
+                $data['Start_Date'],
+                $endDate,
+                $data['CourseDays'],
+                $data['Start_Time'],
+                $data['End_Time']
+            );
+
+
+            if ($conflict) {
+                return response()->json([
+                    'Message' => 'The updated course schedule conflicts with an existing course in the same room.'
+                ], 400);
+            }
+
             // Update the schedule
             $this->staffRepository->updateCourseSchedule($data['CourseId'], [
+                'RoomId' => $data['RoomId'],
                 'Start_Enroll' => $data['Start_Enroll'],
                 'End_Enroll' => $data['End_Enroll'],
                 'Start_Date' => Carbon::parse($data['Start_Date'])->setTimeFromTimeString($data['Start_Time']),

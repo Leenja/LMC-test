@@ -81,6 +81,7 @@ class StaffRepository
         return DB::table('courseschedules')
             ->where('CourseId', $courseId)
             ->update([
+                'RoomId' => $data['RoomId'],
                 'Start_Enroll' => $data['Start_Enroll'],
                 'End_Enroll' => $data['End_Enroll'],
                 'Start_Date' => $data['Start_Date'],
@@ -93,24 +94,34 @@ class StaffRepository
     }
 
     //Conflict
-    public function checkCourseScheduleConflict($roomId, $startDate, $endDate, $courseDays)
+    public function checkCourseScheduleConflict($roomId, $startDate, $endDate, $courseDays, $startTime, $endTime)
     {
-        // First, make sure the course doesn't conflict with any other course in the same room during the same timeslot
+        $courseDays = (array) $courseDays;
+
         return DB::table('courseschedules')
             ->where('RoomId', $roomId)
-            ->where(function ($query) use ($startDate, $endDate, $courseDays) {
-                // Check if the new course start and end dates overlap with an existing course's start and end dates
-                $query->where(function($q) use ($startDate, $endDate) {
+            ->where(function ($query) use ($startDate, $endDate, $courseDays, $startTime, $endTime) {
+                $query->where(function ($q) use ($startDate, $endDate) {
                     $q->whereBetween('Start_Date', [$startDate, $endDate])
-                    ->orWhereBetween('End_Date', [$startDate, $endDate])
-                    ->orWhere(function($q2) use ($startDate, $endDate) {
-                        $q2->where('Start_Date', '<=', $endDate)
-                            ->where('End_Date', '>=', $startDate);
-                    });
+                        ->orWhereBetween('End_Date', [$startDate, $endDate])
+                        ->orWhere(function ($q2) use ($startDate, $endDate) {
+                            $q2->where('Start_Date', '<=', $endDate)
+                                ->where('End_Date', '>=', $startDate);
+                        });
                 });
 
-                // Check if any of the course days overlap
-                $query->whereRaw("JSON_CONTAINS(CourseDays, '\"$courseDays\"')");
+                $query->where(function ($q) use ($courseDays) {
+                    foreach ($courseDays as $day) {
+                        $q->orWhereRaw("JSON_CONTAINS(CourseDays, '\"$day\"')");
+                    }
+                });
+
+                $query->where(function ($q) use ($startTime, $endTime) {
+                    $q->where(function ($timeQ) use ($startTime, $endTime) {
+                        $timeQ->where('Start_Time', '<', $endTime)
+                              ->where('End_Time', '>', $startTime);
+                    });
+                });
             })
             ->exists();
     }
