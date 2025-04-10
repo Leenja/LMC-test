@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Services\StaffService;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Log;
 
 
 class StaffController extends Controller
