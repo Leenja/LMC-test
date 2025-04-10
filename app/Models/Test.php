@@ -11,6 +11,10 @@ class Test extends Model
 
     protected $fillable = [];
 
+    public function User(){
+        return $this->belongsTo(User::class, 'UserId');
+    }
+
     public function Course(){
         return $this->hasOne(Course::class, 'CourseId');
     }

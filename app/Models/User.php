@@ -18,12 +18,17 @@ class User extends Authenticatable
         'Password',
     ];
 
+
     public function StudentProgress(){
         return $this->hasOne(StudentProgress::class, 'StudentProgressId');
     }
 
     public function Notes(){
         return $this->hasOne(Notes::class, 'NotesId');
+    }
+
+    public function Test(){
+        return $this->hasMany(Test::class, 'TestId');
     }
 
     public function Attendance(){
@@ -37,6 +42,9 @@ class User extends Authenticatable
     public function UserTask(){
         return $this->hasMany(UserTask::class, 'UserTaskId');
     }
+    public function Enrollment(){
+        return $this->hasMany(Enrollment::class, 'EnrollmentId');
+    }
 
     public function Complaint(){
         return $this->hasMany(Complaint::class, 'ComplaintId');
@@ -44,6 +52,10 @@ class User extends Authenticatable
 
     public function PlacementTest(){
         return $this->hasMany(PlacementTest::class, 'PlacementTestId');
+    }
+
+    public function Course(){
+        return $this->hasMany(Course::class, 'CourseId');
     }
 
     protected $hidden = [

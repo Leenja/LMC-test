@@ -19,6 +19,9 @@ class Enrollment extends Model
         return $this->belongsTo(Course::class, 'CourseId');
     }
 
+    public function User(){
+        return $this->belongsTo(User::class, 'UserId');
+    }
     public function Certificate(){
         return $this->hasMany(Certificate::class, 'CertificateId');
     }

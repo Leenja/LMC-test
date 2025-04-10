@@ -17,6 +17,10 @@ class Course extends Model
         "Level",
     ];
 
+    public function User(){
+        return $this->belongsTo(User::class, 'UserId');
+    }
+
     public function Language(){
         return $this->belongsTo(Language::class, 'LanguageId');
     }
