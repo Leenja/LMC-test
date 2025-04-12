@@ -9,7 +9,12 @@ class FlashCard extends Model
 {
     use HasFactory;
 
-    protected $fillable = [];
+    protected $fillable = [
+        'LessonId',
+        'CourseId',
+        'Content',
+        'Translation'
+    ];
 
     public function Lesson(){
         return $this->belongsTo(Lesson::class, 'LessonId');

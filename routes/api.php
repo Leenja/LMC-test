@@ -14,3 +14,5 @@ Route::post("editCourse", [StaffController::class,"editCourse"]);
 Route::get("viewEnrolledStudentsInCourse/{courseId}", [StaffController::class,"viewEnrolledStudentsInCourse"]);
 
 Route::get("getAllEnrolledStudents", [StaffController::class,"getAllEnrolledStudents"]);
+
+Route::post('addFlashcard', [StaffController::class, 'addFlashCard']);

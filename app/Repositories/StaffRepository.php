@@ -5,6 +5,8 @@ namespace App\Repositories;
 use App\Models\Course;
 use App\Models\User;
 use App\Models\Enrollment;
+use App\Models\FlashCard;
+use App\Models\Lesson;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
@@ -141,6 +143,22 @@ class StaffRepository
                 });
             })
             ->exists();
+    }
+
+    //Teacher-------------------------------------------------------
+
+    //Add flash cards to course or lesson
+    public function createFlashCard($data)
+    {
+        $lesson = Lesson::findOrFail($data['LessonId']);
+        $courseId = $lesson->CourseId;
+
+        return Flashcard::create([
+            'LessonId' => $data['LessonId'],
+            'CourseId' => $courseId,
+            'Content' => $data['Content'],
+            'Translation' => $data['Translation'],
+        ]);
     }
 
 }

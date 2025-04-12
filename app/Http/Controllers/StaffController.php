@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Course;
 use App\Models\Enrollment;
+use App\Models\FlashCard;
+use App\Models\Lesson;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Services\StaffService;
@@ -61,7 +64,6 @@ class StaffController extends Controller
                 ];
             });
     }
-
 
     public function addCourse(Request $request) {
 
@@ -169,7 +171,29 @@ class StaffController extends Controller
     }
 
     public function addFlashCard(Request $request) {
+        $data = $request->validate([
+            'LessonId' => 'required|exists:lessons,id',
+            'Content' => 'required|string',
+            'Translation' => 'required|string',
+        ]);
 
+        /*$teacherId = auth()->user()->id;
+
+        $lesson = Lesson::find($data['LessonId']);
+
+        //check if the teacher is associated with this lesson/course
+        if ($lesson->teacher_id !== $teacherId) {
+            return response()->json([
+                'Message' => 'You can not add flashcards to this lesson.'
+            ]);
+        }*/
+
+        $flashcard = $this->staffService->addFlashCard($data);
+
+        return response()->json([
+            'message' => 'Flashcard added to lesson successfully.',
+            'flashcard' => $flashcard,
+        ]);
     }
 
     public function editFlashCard(Request $request) {

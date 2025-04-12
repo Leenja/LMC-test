@@ -173,5 +173,15 @@ class StaffService
         });
     }
 
+    //Teacher---------------------------------------------------------
+
+    //Add flash card to lesson
+    public function addFlashCard($data)
+    {
+        return DB::transaction(function () use ($data) {
+            return $this->staffRepository->createFlashCard($data);
+        });
+    }
+
 }
 
